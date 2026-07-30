@@ -1,0 +1,280 @@
+{
+  "version": 1,
+  "shardId": 1,
+  "apps": [
+    {
+      "id": "com.github.rexlevin.cb-jsonbox",
+      "githubRepoId": 1152563524,
+      "repo": "https://github.com/rexlevin/cb-jsonbox",
+      "createdAt": "2026-02-08T04:05:13.000Z",
+      "discoveredAt": "2026-07-26T14:05:02.959Z",
+      "status": "active",
+      "score": 100,
+      "consecutiveFailures": 0,
+      "lastCheck": "2026-07-30T01:12:21.814Z",
+      "repoStatus": "active",
+      "repoStatusDetail": null,
+      "hasValidCanboxApp": true,
+      "hasValidPackageJson": true,
+      "errorHistory": [],
+      "_canboxApp": {
+        "version": 1,
+        "electron": {
+          "range": "^42.5.1"
+        },
+        "type": "native",
+        "webApp": null
+      },
+      "_pkg": {
+        "name": "cb-jsonbox",
+        "id": "com.github.rexlevin.cb-jsonbox",
+        "private": true,
+        "version": "0.0.8",
+        "description": "JsonBox - 跨平台的 JSON 格式化工具",
+        "author": "rexlevin",
+        "license": "Apache-2.0",
+        "homepage": "https://github.com/rexlevin/cb-jsonbox",
+        "main": "main.js",
+        "logo": "logo.png",
+        "keywords": [
+          "json",
+          "jsonformatter",
+          "development",
+          "utility"
+        ],
+        "scripts": {
+          "dev": "vite --port 5173",
+          "build": "vite build",
+          "preview": "vite preview",
+          "dist": "electron-builder --linux dir",
+          "start": "NODE_ENV=development electron -r /depot/cargo/canbox-core/injection.js . --app-id=cb-jsonbox --no-sandbox"
+        },
+        "dependencies": {
+          "bootstrap-icons": "^1.10.3",
+          "element-plus": "^2.10.7",
+          "lodash-es": "^4.17.21",
+          "monaco-editor": "^0.47.0",
+          "nanoid": "^3.3.4",
+          "vue": "^3.5.17",
+          "vue-router": "^4.5.1",
+          "x2js": "^3.4.4"
+        },
+        "devDependencies": {
+          "@vitejs/plugin-vue": "^6.0.0",
+          "electron": "^42.5.1",
+          "electron-builder": "^26.0.12",
+          "typescript": "^5.9.2",
+          "vite": "^7.0.0"
+        },
+        "build": {
+          "appId": "com.github.rexlevin.cb-jsonbox",
+          "directories": {
+            "output": "dist"
+          },
+          "files": [
+            "main.js",
+            "preload.js",
+            "build/**/*",
+            "package.json",
+            "logo.png"
+          ],
+          "linux": {
+            "target": [
+              "dir"
+            ]
+          }
+        }
+      },
+      "_repoMeta": {
+        "stars": 0,
+        "forks": 0,
+        "lastCommitAt": "2026-07-26T05:02:00.000Z",
+        "license": "Apache-2.0",
+        "homepage": null,
+        "createdAt": "2026-02-08T04:05:13.000Z"
+      },
+      "stars": 0,
+      "forks": 0,
+      "lastCommitAt": "2026-07-26T05:02:00.000Z"
+    },
+    {
+      "id": "com.github.canbox-io.canbox-developer",
+      "githubRepoId": 1287790255,
+      "repo": "https://github.com/canbox-io/canbox-developer",
+      "createdAt": "2026-07-03T02:28:37.000Z",
+      "discoveredAt": "2026-07-30T02:21:27.185Z",
+      "status": "active",
+      "score": 100,
+      "consecutiveFailures": 0,
+      "lastCheck": "2026-07-30T02:21:27.185Z",
+      "repoStatus": "active",
+      "repoStatusDetail": null,
+      "hasValidCanboxApp": true,
+      "hasValidPackageJson": true,
+      "errorHistory": [],
+      "_canboxApp": {
+        "version": 1,
+        "electron": {
+          "range": "42.5.1"
+        },
+        "type": "native",
+        "webApp": null
+      },
+      "_pkg": {
+        "name": "canbox-developer",
+        "id": "com.github.canbox-io.canbox-developer",
+        "version": "0.1.4",
+        "description": "Canbox 开发者工具 APP — 脚手架创建、源码目录调试启动、打包发布",
+        "main": "main.js",
+        "logo": "logo.png",
+        "license": "Apache-2.0",
+        "author": "lizl6",
+        "scripts": {
+          "dev": "vite --host 0.0.0.0 --port 5102",
+          "build": "vite build",
+          "dist": "electron-builder --linux dir",
+          "start": "NODE_ENV=development electron -r /depot/cargo/canbox-core/injection.js . --app-id=canbox-developer --no-sandbox"
+        },
+        "dependencies": {
+          "adm-zip": "^0.5.16",
+          "element-plus": "^2.8.3",
+          "pinia": "^3.0.3",
+          "vue": "^3.4.21",
+          "vue-i18n": "^11.2.8",
+          "vue-router": "^4.4.5"
+        },
+        "devDependencies": {
+          "@vitejs/plugin-vue": "^5.1.2",
+          "electron": "^42.5.1",
+          "electron-builder": "^26.0.12",
+          "vite": "^5.4.6"
+        },
+        "build": {
+          "appId": "com.github.canbox-io.canbox-developer",
+          "directories": {
+            "output": "dist"
+          },
+          "files": [
+            "main.js",
+            "preload.js",
+            "build/**/*",
+            "package.json",
+            "logo.png"
+          ],
+          "linux": {
+            "target": [
+              "dir"
+            ]
+          }
+        }
+      },
+      "_repoMeta": {
+        "stars": 0,
+        "forks": 0,
+        "lastCommitAt": "2026-07-22T08:38:30.000Z",
+        "license": "Apache-2.0",
+        "homepage": null,
+        "createdAt": "2026-07-03T02:28:37.000Z"
+      },
+      "stars": 0,
+      "forks": 0,
+      "lastCommitAt": "2026-07-22T08:38:30.000Z"
+    },
+    {
+      "id": "com.github.rexlevin.cb-hostsbox",
+      "githubRepoId": 1139585324,
+      "repo": "https://github.com/rexlevin/cb-hostsbox",
+      "createdAt": "2026-01-22T06:33:39.000Z",
+      "discoveredAt": "2026-07-30T02:21:27.401Z",
+      "status": "active",
+      "score": 100,
+      "consecutiveFailures": 0,
+      "lastCheck": "2026-07-30T02:21:27.401Z",
+      "repoStatus": "active",
+      "repoStatusDetail": null,
+      "hasValidCanboxApp": true,
+      "hasValidPackageJson": true,
+      "errorHistory": [],
+      "_canboxApp": {
+        "version": 1,
+        "electron": {
+          "range": "^42.5.1"
+        },
+        "type": "native",
+        "webApp": null
+      },
+      "_pkg": {
+        "name": "cb-hostsbox",
+        "id": "com.github.rexlevin.cb-hostsbox",
+        "private": true,
+        "version": "1.1.2",
+        "description": "HostsBox - 跨平台的 hosts 文件管理工具",
+        "author": "rexlevin",
+        "license": "Apache-2.0",
+        "homepage": "https://github.com/rexlevin/cb-hostsbox",
+        "main": "main.js",
+        "logo": "public/logo.png",
+        "keywords": [
+          "hosts",
+          "network",
+          "development",
+          "utility"
+        ],
+        "scripts": {
+          "dev": "vite --port 5175",
+          "build": "vite build",
+          "preview": "vite preview",
+          "dist": "electron-builder --linux dir",
+          "start": "NODE_ENV=development electron -r /depot/cargo/canbox-core/injection.js . --app-id=cb-hostsbox --no-sandbox"
+        },
+        "dependencies": {
+          "@codemirror/language-data": "^6.5.2",
+          "@codemirror/state": "^6.5.4",
+          "@codemirror/theme-one-dark": "^6.1.3",
+          "@codemirror/view": "^6.39.11",
+          "@element-plus/icons-vue": "^2.3.2",
+          "codemirror": "^6.0.2",
+          "element-plus": "^2.13.1",
+          "vue": "^3.5.17",
+          "vue-router": "^4.5.1"
+        },
+        "devDependencies": {
+          "@vitejs/plugin-vue": "^6.0.0",
+          "electron": "^42.5.1",
+          "electron-builder": "^26.0.12",
+          "typescript": "^5.9.3",
+          "vite": "^7.0.0"
+        },
+        "build": {
+          "appId": "com.github.rexlevin.cb-hostsbox",
+          "directories": {
+            "output": "dist"
+          },
+          "files": [
+            "main.js",
+            "preload.js",
+            "build/**/*",
+            "public/**/*",
+            "package.json"
+          ],
+          "linux": {
+            "target": [
+              "dir"
+            ]
+          }
+        }
+      },
+      "_repoMeta": {
+        "stars": 0,
+        "forks": 0,
+        "lastCommitAt": "2026-07-23T02:54:03.000Z",
+        "license": "MIT",
+        "homepage": null,
+        "createdAt": "2026-01-22T06:33:39.000Z"
+      },
+      "stars": 0,
+      "forks": 0,
+      "lastCommitAt": "2026-07-23T02:54:03.000Z"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+name: Verify And Refresh APPs
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine shard to verify
+        id: shard
+        run: |
+          SHARD_INDEX=$(node -e "const d=require('./data/app_lists.json'); console.log(d.nextShardToVerify || 1)")
+          echo "shard_index=$SHARD_INDEX" >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Verify shard
+        env:
+          GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+        run: node scripts/catalog/verify.js --shard=${{ steps.shard.outputs.shard_index }}
+
+      - name: Commit changes
+        if: success()
+        run: |
+          git add data/
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: catalog verify shard-${{ steps.shard.outputs.shard_index }} - $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "No changes to commit"
+          git push
+
+      - name: Trigger assemble
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'assemble.yml',
+              ref: 'main'
+            });

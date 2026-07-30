@@ -1,0 +1,16 @@
+{
+  "name": "canbox-catalog",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Canbox APP catalog data production and storage",
+  "scripts": {
+    "catalog:discover": "node scripts/catalog/discover.js",
+    "catalog:reconcile": "node scripts/catalog/reconcile.js",
+    "catalog:verify": "node scripts/catalog/verify.js",
+    "catalog:assemble": "node scripts/catalog/assemble.js",
+    "catalog:rediscover": "node scripts/catalog/rediscover.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.0.0"
+  }
+}

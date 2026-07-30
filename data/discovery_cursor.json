@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "lastRun": "2026-07-30T01:55:23.614Z",
+  "firstRun": "2026-07-26T13:52:26.999Z",
+  "totalDiscovered": 0,
+  "history": [
+    {
+      "timestamp": "2026-07-26T13:52:26.999Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T14:05:04.963Z",
+      "newCount": 1,
+      "action": "rediscover"
+    },
+    {
+      "timestamp": "2026-07-26T14:58:42.684Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T16:03:20.870Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T17:56:45.961Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T19:06:27.162Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T20:49:12.060Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T21:53:03.755Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T22:53:32.373Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-26T23:54:46.072Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T02:12:51.990Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T06:21:09.330Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T10:35:37.198Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T13:34:23.600Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T16:10:32.696Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T18:19:45.354Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T20:16:40.370Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T21:59:10.632Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-27T23:06:32.885Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T01:53:31.094Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T04:58:36.110Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T07:40:40.599Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T10:27:52.048Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T12:49:58.824Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T15:14:43.139Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T19:13:10.254Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T21:02:12.777Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T22:53:27.781Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-28T23:54:03.044Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T01:56:20.124Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T05:19:12.444Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T08:27:28.664Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T11:17:25.704Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T13:52:38.885Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T15:46:19.548Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T17:07:31.876Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T19:02:51.784Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T20:45:13.174Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T21:53:54.112Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T22:54:59.767Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-29T23:55:53.207Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-30T01:55:23.614Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-07-30T02:21:29.404Z",
+      "newCount": 2,
+      "action": "rediscover"
+    }
+  ]
+}
