@@ -11,7 +11,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-07-30T01:12:21.814Z",
+      "lastCheck": "2026-07-30T11:44:14.859Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -106,7 +106,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-07-30T02:21:27.185Z",
+      "lastCheck": "2026-07-30T11:44:18.453Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -128,7 +128,7 @@
         "main": "main.js",
         "logo": "logo.png",
         "license": "Apache-2.0",
-        "author": "lizl6",
+        "author": "canbox-io",
         "scripts": {
           "dev": "vite --host 0.0.0.0 --port 5102",
           "build": "vite build",
@@ -178,7 +178,7 @@
       },
       "stars": 0,
       "forks": 0,
-      "lastCommitAt": "2026-07-22T08:38:30.000Z"
+      "lastCommitAt": "2026-07-30T03:17:56.000Z"
     },
     {
       "id": "com.github.rexlevin.cb-hostsbox",
@@ -189,7 +189,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-07-30T02:21:27.401Z",
+      "lastCheck": "2026-07-30T11:44:22.326Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
