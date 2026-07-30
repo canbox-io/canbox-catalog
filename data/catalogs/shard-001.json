@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "shardId": 1,
-  "generatedAt": "2026-07-30T02:21:40.982Z",
+  "generatedAt": "2026-07-30T11:44:43.120Z",
   "apps": [
     {
       "id": "com.github.rexlevin.cb-jsonbox",
@@ -35,7 +35,7 @@
       "name": "canbox-developer",
       "description": "Canbox 开发者工具 APP — 脚手架创建、源码目录调试启动、打包发布",
       "description_en": "Canbox 开发者工具 APP — 脚手架创建、源码目录调试启动、打包发布",
-      "author": "lizl6",
+      "author": "canbox-io",
       "category": "",
       "tags": [],
       "logo": "https://raw.githubusercontent.com/canbox-io/canbox-developer/main/logo.png",
@@ -45,7 +45,7 @@
       "appVersion": "0.1.4",
       "electronRange": "42.5.1",
       "createdAt": "2026-07-03T02:28:37.000Z",
-      "lastCommitAt": "2026-07-22T08:38:30.000Z",
+      "lastCommitAt": "2026-07-30T03:17:56.000Z",
       "stars": 0,
       "forks": 0,
       "status": "active",
