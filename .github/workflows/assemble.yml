@@ -22,7 +22,7 @@ jobs:
           node-version: '24'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --no-package-lock --registry=https://registry.npmjs.org/
 
       - name: Assemble catalog
         run: node scripts/catalog/assemble.js
