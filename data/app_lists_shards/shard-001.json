@@ -11,7 +11,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-08-19T08:21:03.774Z",
+      "lastCheck": "2026-08-19T10:16:01.005Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -20,7 +20,7 @@
       "_canboxApp": {
         "version": 1,
         "electron": {
-          "range": "^42.5.1"
+          "range": "42.5.1"
         },
         "type": "native",
         "webApp": null
@@ -61,7 +61,7 @@
         },
         "devDependencies": {
           "@vitejs/plugin-vue": "^6.0.0",
-          "electron": "^42.5.1",
+          "electron": "42.5.1",
           "electron-builder": "^26.0.12",
           "typescript": "^5.9.2",
           "vite": "^7.0.0"
@@ -95,7 +95,7 @@
       },
       "stars": 0,
       "forks": 0,
-      "lastCommitAt": "2026-07-26T05:02:00.000Z"
+      "lastCommitAt": "2026-08-19T09:49:01.000Z"
     },
     {
       "id": "com.github.canbox-io.canbox-developer",
@@ -106,7 +106,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-08-19T08:21:07.579Z",
+      "lastCheck": "2026-08-19T10:16:04.560Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -145,7 +145,7 @@
         },
         "devDependencies": {
           "@vitejs/plugin-vue": "^5.1.2",
-          "electron": "^42.5.1",
+          "electron": "42.5.1",
           "electron-builder": "^26.0.12",
           "vite": "^5.4.6"
         },
@@ -178,7 +178,7 @@
       },
       "stars": 0,
       "forks": 0,
-      "lastCommitAt": "2026-07-30T03:17:56.000Z"
+      "lastCommitAt": "2026-08-19T09:48:31.000Z"
     },
     {
       "id": "com.github.rexlevin.cb-hostsbox",
@@ -189,7 +189,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-08-19T08:21:11.276Z",
+      "lastCheck": "2026-08-19T10:16:08.076Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -198,7 +198,7 @@
       "_canboxApp": {
         "version": 1,
         "electron": {
-          "range": "^42.5.1"
+          "range": "42.5.1"
         },
         "type": "native",
         "webApp": null
@@ -207,7 +207,7 @@
         "name": "cb-hostsbox",
         "id": "com.github.rexlevin.cb-hostsbox",
         "private": true,
-        "version": "1.1.2",
+        "version": "1.1.3",
         "description": "HostsBox - 跨平台的 hosts 文件管理工具",
         "author": "rexlevin",
         "license": "Apache-2.0",
@@ -225,7 +225,7 @@
           "build": "vite build",
           "preview": "vite preview",
           "dist": "electron-builder --linux dir",
-          "start": "NODE_ENV=development electron -r /depot/cargo/canbox-core/injection.js . --app-id=cb-hostsbox --no-sandbox"
+          "start": "cross-env NODE_ENV=development electron -r ../canbox-core/injection.js . --app-id=cb-hostsbox --no-sandbox"
         },
         "dependencies": {
           "@codemirror/language-data": "^6.5.2",
@@ -240,7 +240,8 @@
         },
         "devDependencies": {
           "@vitejs/plugin-vue": "^6.0.0",
-          "electron": "^42.5.1",
+          "cross-env": "^10.1.0",
+          "electron": "42.5.1",
           "electron-builder": "^26.0.12",
           "typescript": "^5.9.3",
           "vite": "^7.0.0"
@@ -274,7 +275,7 @@
       },
       "stars": 0,
       "forks": 0,
-      "lastCommitAt": "2026-07-23T02:54:03.000Z"
+      "lastCommitAt": "2026-08-19T09:54:54.000Z"
     }
   ]
 }
