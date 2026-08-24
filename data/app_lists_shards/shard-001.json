@@ -11,7 +11,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-08-24T08:33:32.285Z",
+      "lastCheck": "2026-08-24T10:25:50.505Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -106,7 +106,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-08-24T08:33:35.837Z",
+      "lastCheck": "2026-08-24T10:25:54.159Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -133,7 +133,7 @@
           "dev": "vite --host 0.0.0.0 --port 5102",
           "build": "vite build",
           "dist": "electron-builder --linux dir",
-          "start": "NODE_ENV=development electron -r /depot/cargo/canbox-core/injection.js . --app-id=canbox-developer --no-sandbox"
+          "start": "cross-env NODE_ENV=development electron -r /depot/cargo/canbox-core/injection.js . --app-id=canbox-developer --no-sandbox"
         },
         "dependencies": {
           "adm-zip": "^0.5.16",
@@ -145,6 +145,7 @@
         },
         "devDependencies": {
           "@vitejs/plugin-vue": "^5.1.2",
+          "cross-env": "^7.0.3",
           "electron": "42.5.1",
           "electron-builder": "^26.0.12",
           "vite": "^5.4.6"
@@ -178,7 +179,7 @@
       },
       "stars": 0,
       "forks": 0,
-      "lastCommitAt": "2026-08-19T09:48:31.000Z"
+      "lastCommitAt": "2026-08-24T10:04:48.000Z"
     },
     {
       "id": "com.github.rexlevin.cb-hostsbox",
@@ -189,7 +190,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-08-24T08:33:39.339Z",
+      "lastCheck": "2026-08-24T10:25:57.793Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
