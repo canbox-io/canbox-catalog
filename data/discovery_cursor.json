@@ -1,13 +1,9 @@
 {
   "version": 1,
-  "lastRun": "2026-08-25T07:48:25.347Z",
+  "lastRun": "2026-08-25T08:48:02.310Z",
   "firstRun": "2026-07-26T13:52:26.999Z",
   "totalDiscovered": 0,
   "history": [
-    {
-      "timestamp": "2026-08-20T18:44:29.256Z",
-      "newCount": 0
-    },
     {
       "timestamp": "2026-08-20T19:34:23.275Z",
       "newCount": 0
@@ -402,6 +398,10 @@
     },
     {
       "timestamp": "2026-08-25T07:48:25.347Z",
+      "newCount": 0
+    },
+    {
+      "timestamp": "2026-08-25T08:48:02.310Z",
       "newCount": 0
     }
   ]
