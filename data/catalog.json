@@ -1,9 +1,9 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-02T06:31:40.029Z",
+  "generatedAt": "2026-09-02T09:43:03.694Z",
   "source": "github",
   "sourceName": "Canbox 官方 APP 目录",
-  "totalApps": 3,
+  "totalApps": 4,
   "totalShards": 1,
   "filterRules": {
     "includeStatus": [
@@ -21,7 +21,7 @@
     {
       "id": 1,
       "file": "catalogs/shard-001.json",
-      "appCount": 3,
+      "appCount": 4,
       "maxScore": 100,
       "minScore": 100
     }

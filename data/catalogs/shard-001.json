@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "shardId": 1,
-  "generatedAt": "2026-09-02T06:31:40.029Z",
+  "generatedAt": "2026-09-02T09:43:03.693Z",
   "apps": [
     {
       "id": "com.github.rexlevin.cb-jsonbox",
@@ -79,6 +79,32 @@
       "riskLevel": "none",
       "showDownload": true,
       "issueUrl": "https://github.com/rexlevin/cb-hostsbox/issues",
+      "disabledReason": null
+    },
+    {
+      "id": "com.github.rexlevin.cb-imagebox",
+      "repo": "https://github.com/rexlevin/cb-imagebox",
+      "name": "cb-imagebox",
+      "description": "ImageBox - 图片工具箱",
+      "description_en": "ImageBox - 图片工具箱",
+      "author": "rexlevin",
+      "category": "",
+      "tags": [],
+      "logo": "https://raw.githubusercontent.com/rexlevin/cb-imagebox/main/logo.png",
+      "homepage": "https://github.com/rexlevin/cb-imagebox",
+      "license": "Apache-2.0",
+      "type": "native",
+      "appVersion": "0.0.6",
+      "electronRange": "42.5.1",
+      "createdAt": "2026-03-27T11:39:08.000Z",
+      "lastCommitAt": "2026-08-19T09:48:53.000Z",
+      "stars": 0,
+      "forks": 0,
+      "status": "active",
+      "score": 100,
+      "riskLevel": "none",
+      "showDownload": true,
+      "issueUrl": "https://github.com/rexlevin/cb-imagebox/issues",
       "disabledReason": null
     }
   ]
