@@ -5,10 +5,6 @@
   "totalDiscovered": 0,
   "history": [
     {
-      "timestamp": "2026-08-23T10:28:05.868Z",
-      "newCount": 0
-    },
-    {
       "timestamp": "2026-08-23T11:24:13.806Z",
       "newCount": 0
     },
@@ -403,6 +399,11 @@
     {
       "timestamp": "2026-09-02T08:36:46.616Z",
       "newCount": 0
+    },
+    {
+      "timestamp": "2026-09-02T09:42:51.642Z",
+      "newCount": 1,
+      "action": "rediscover"
     }
   ]
 }
