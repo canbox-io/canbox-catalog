@@ -11,7 +11,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-09-03T01:44:59.210Z",
+      "lastCheck": "2026-09-03T06:35:35.002Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -106,7 +106,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-09-03T01:45:02.957Z",
+      "lastCheck": "2026-09-03T06:35:38.741Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -190,7 +190,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-09-03T01:45:06.640Z",
+      "lastCheck": "2026-09-03T06:35:42.374Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -287,7 +287,7 @@
       "status": "active",
       "score": 100,
       "consecutiveFailures": 0,
-      "lastCheck": "2026-09-03T01:45:10.297Z",
+      "lastCheck": "2026-09-03T06:35:45.935Z",
       "repoStatus": "active",
       "repoStatusDetail": null,
       "hasValidCanboxApp": true,
@@ -325,7 +325,7 @@
           "build": "vite build",
           "preview": "vite preview",
           "dist": "electron-builder --linux dir",
-          "start": "NODE_ENV=development electron -r /depot/cargo/canbox-core/injection.js . --app-id=cb-imagebox --no-sandbox"
+          "start": "cross-env NODE_ENV=development electron -r ../canbox-core/injection.js . --app-id=cb-imagebox --no-sandbox"
         },
         "dependencies": {
           "@vicons/carbon": "^0.13.0",
@@ -341,6 +341,7 @@
         },
         "devDependencies": {
           "@vitejs/plugin-vue": "^6.0.7",
+          "cross-env": "^10.1.0",
           "electron": "42.5.1",
           "electron-builder": "^26.0.12",
           "typescript": "^5.9.3",
@@ -375,7 +376,7 @@
       },
       "stars": 0,
       "forks": 0,
-      "lastCommitAt": "2026-09-03T01:16:37.000Z"
+      "lastCommitAt": "2026-09-03T02:22:15.000Z"
     }
   ]
 }
