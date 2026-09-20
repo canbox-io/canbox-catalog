@@ -6,10 +6,12 @@
 
 const helpers = require('./helpers');
 
-const TRIGGER_FILE = helpers.DATA_DIR + '/.reconcile-result.json';
+const PLATFORM = helpers.getPlatformArg();
+const paths = helpers.getPaths(PLATFORM);
+const TRIGGER_FILE = paths.triggerFile('reconcile-result');
 
 async function reconcile() {
-    console.log('[reconcile] Starting topic reconciliation...');
+    console.log(`[reconcile] Starting topic reconciliation for platform: ${PLATFORM}...`);
 
     // 1. 查询所有带 canbox-app topic 的仓库
     const allGithubApps = [];
@@ -41,7 +43,7 @@ async function reconcile() {
     console.log(`[reconcile] Fetched ${allGithubApps.length} repos from GitHub`);
 
     // 2. 提取已有的 githubRepoId 集合
-    const existingApps = helpers.readAllApps();
+    const existingApps = helpers.readAllApps(paths);
     const existingRepoIds = new Set(existingApps.map(app => app.githubRepoId));
     const existingRepoUrls = new Set(existingApps.map(app => app.repo));
 
@@ -70,7 +72,7 @@ async function reconcile() {
         await sleep(1000);
     }
 
-    const addedCount = helpers.appendAppsToShards(newApps);
+    const addedCount = helpers.appendAppsToShards(newApps, paths);
     console.log(`[reconcile] Added ${addedCount} new apps`);
 
     // 5. 写入触发标记
@@ -95,7 +97,7 @@ async function parseRepoToApp(repo, action) {
 
     let appId;
     try {
-        appId = helpers.generateAppId(repoUrl);
+        appId = helpers.generateAppId(repoUrl, PLATFORM);
     } catch (err) {
         console.warn(`[reconcile] Skipping repo with invalid URL: ${repoUrl}`);
         return null;

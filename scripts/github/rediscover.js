@@ -6,10 +6,13 @@
 
 const helpers = require('./helpers');
 
-async function rediscover() {
-    console.log('[rediscover] Starting rediscovery...');
+const PLATFORM = helpers.getPlatformArg();
+const paths = helpers.getPaths(PLATFORM);
 
-    const cursor = helpers.readCursor();
+async function rediscover() {
+    console.log(`[rediscover] Starting rediscovery for platform: ${PLATFORM}...`);
+
+    const cursor = helpers.readCursor(paths);
     const firstRun = cursor.firstRun;
 
     if (!firstRun) {
@@ -55,7 +58,7 @@ async function rediscover() {
     console.log(`[rediscover] Found ${allApps.length} repos before firstRun`);
 
     // 追加到分片（自动去重）
-    const addedCount = helpers.appendAppsToShards(allApps);
+    const addedCount = helpers.appendAppsToShards(allApps, paths);
     console.log(`[rediscover] Added ${addedCount} new apps (duplicates skipped)`);
 
     // 更新 cursor 历史
@@ -67,10 +70,10 @@ async function rediscover() {
     if (cursor.history.length > 100) {
         cursor.history = cursor.history.slice(-100);
     }
-    helpers.writeCursor(cursor);
+    helpers.writeCursor(cursor, paths);
 
     // 写入触发标记
-    const TRIGGER_FILE = helpers.DATA_DIR + '/.rediscover-result.json';
+    const TRIGGER_FILE = paths.triggerFile('rediscover-result');
     helpers.writeTriggerMarker(TRIGGER_FILE, addedCount);
 
     console.log(`[rediscover] Done. Added ${addedCount} new apps.`);
@@ -92,7 +95,7 @@ async function parseRepoToApp(repo, action) {
 
     let appId;
     try {
-        appId = helpers.generateAppId(repoUrl);
+        appId = helpers.generateAppId(repoUrl, PLATFORM);
     } catch (err) {
         console.warn(`[rediscover] Skipping repo with invalid URL: ${repoUrl}`);
         return null;

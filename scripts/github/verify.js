@@ -6,26 +6,28 @@
 
 const helpers = require('./helpers');
 
+const PLATFORM = helpers.getPlatformArg();
+const paths = helpers.getPaths(PLATFORM);
+const ADAPTER = helpers.getPlatformAdapter(PLATFORM);
+
 /**
  * 解析命令行参数获取分片序号
  */
 function getShardIndex() {
-    const args = process.argv.slice(2);
-    for (let i = 0; i < args.length; i++) {
-        if (args[i] === '--shard' && args[i + 1]) {
-            return parseInt(args[i + 1], 10);
-        }
+    const shardArg = helpers.getArgValue('shard');
+    if (shardArg) {
+        return parseInt(shardArg, 10);
     }
     // 从 app_lists.json 读取 nextShardToVerify
-    const index = helpers.readAppListsIndex();
+    const index = helpers.readAppListsIndex(paths);
     return index.nextShardToVerify || 1;
 }
 
 async function verify() {
     const shardId = getShardIndex();
-    console.log(`[verify] Starting verification for shard ${shardId}...`);
+    console.log(`[verify] Starting verification for shard ${shardId} (platform: ${PLATFORM})...`);
 
-    const shard = helpers.readShard(shardId);
+    const shard = helpers.readShard(shardId, paths);
     if (!shard || !shard.apps || shard.apps.length === 0) {
         console.log(`[verify] Shard ${shardId} not found or empty. Skipping.`);
         return;
@@ -62,10 +64,10 @@ async function verify() {
     }
 
     // 保存分片
-    helpers.writeShard(shardId, shard);
+    helpers.writeShard(shardId, shard, paths);
 
     // 更新索引
-    const index = helpers.readAppListsIndex();
+    const index = helpers.readAppListsIndex(paths);
     const shardInfo = index.shards.find(s => s.id === shardId);
     if (shardInfo) {
         shardInfo.lastChecked = new Date().toISOString();
@@ -74,7 +76,7 @@ async function verify() {
     // 更新 nextShardToVerify：递增并回绕
     index.nextShardToVerify = (shardId % index.totalShards) + 1;
     index.lastRefresh = new Date().toISOString();
-    helpers.writeAppListsIndex(index);
+    helpers.writeAppListsIndex(index, paths);
 
     console.log(`[verify] Done. Updated: ${updatedCount}, Errors: ${errorCount}`);
 }
@@ -85,7 +87,7 @@ async function verify() {
  * @returns {object} 更新后的 APP 数据
  */
 async function verifyApp(app) {
-    const repoMatch = app.repo.match(/github\.com\/([^/]+)\/([^/]+)/);
+    const repoMatch = app.repo.match(ADAPTER.hostPattern);
     if (!repoMatch) {
         console.warn(`[verify] Invalid repo URL: ${app.repo}`);
         app.repoStatus = 'gone';
@@ -144,8 +146,8 @@ async function verifyApp(app) {
         const actualRepo = repoData.name;
         if (actualOwner && actualRepo && (actualOwner !== owner || actualRepo !== repoName)) {
             console.log(`[verify] Redirect detected: ${owner}/${repoName} → ${actualOwner}/${actualRepo}`);
-            app.id = `com.github.${actualOwner}.${actualRepo}`;
-            app.repo = `https://github.com/${actualOwner}/${actualRepo}`;
+            app.id = `${ADAPTER.idPrefix}.${actualOwner}.${actualRepo}`;
+            app.repo = `${ADAPTER.siteBase}/${actualOwner}/${actualRepo}`;
         }
 
         // 3. 刷新元数据
@@ -160,7 +162,7 @@ async function verifyApp(app) {
     let canboxApp = null;
     let pkg = null;
 
-    const actualRepoMatch = app.repo.match(/github\.com\/([^/]+)\/([^/]+)/);
+    const actualRepoMatch = app.repo.match(ADAPTER.hostPattern);
     const currentOwner = actualRepoMatch ? actualRepoMatch[1] : owner;
     const currentRepoName = actualRepoMatch ? actualRepoMatch[2] : repoName;
 

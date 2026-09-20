@@ -28,8 +28,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          node scripts/catalog/reconcile.js
-          NEW_COUNT=$(cat data/.reconcile-result.json 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).newCount))" || echo "0")
+          node scripts/github/reconcile.js --platform=github
+          NEW_COUNT=$(cat data/github/.reconcile-result.json 2>/dev/null | node -e "let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>console.log(JSON.parse(d).newCount))" || echo "0")
           echo "new_count=$NEW_COUNT" >> $GITHUB_OUTPUT
 
       - name: Commit changes

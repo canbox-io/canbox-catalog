@@ -6,13 +6,15 @@
 
 const helpers = require('./helpers');
 
-const TRIGGER_FILE = helpers.DATA_DIR + '/.discover-result.json';
+const PLATFORM = helpers.getPlatformArg();
+const paths = helpers.getPaths(PLATFORM);
+const TRIGGER_FILE = paths.triggerFile('discover-result');
 const LOOKBACK_MINUTES = 30; // 回溯窗口（分钟）
 
 async function discover() {
-    console.log('[discover] Starting discovery...');
+    console.log(`[discover] Starting discovery for platform: ${PLATFORM}...`);
 
-    const cursor = helpers.readCursor();
+    const cursor = helpers.readCursor(paths);
     const isFirstRun = !cursor.lastRun;
 
     let newApps = [];
@@ -27,7 +29,7 @@ async function discover() {
     }
 
     // 追加到分片
-    const addedCount = helpers.appendAppsToShards(newApps);
+    const addedCount = helpers.appendAppsToShards(newApps, paths);
     console.log(`[discover] Discovered ${newApps.length} repos, added ${addedCount} new apps`);
 
     // 更新 cursor
@@ -45,7 +47,7 @@ async function discover() {
     if (cursor.history.length > 100) {
         cursor.history = cursor.history.slice(-100);
     }
-    helpers.writeCursor(cursor);
+    helpers.writeCursor(cursor, paths);
 
     // 写入触发标记
     helpers.writeTriggerMarker(TRIGGER_FILE, addedCount);
@@ -149,7 +151,7 @@ async function parseRepoToApp(repo, action) {
 
     let appId;
     try {
-        appId = helpers.generateAppId(repoUrl);
+        appId = helpers.generateAppId(repoUrl, PLATFORM);
     } catch (err) {
         console.warn(`[discover] Skipping repo with invalid URL: ${repoUrl}`);
         return null;

@@ -4,11 +4,16 @@
   "private": true,
   "description": "Canbox APP catalog data production and storage",
   "scripts": {
-    "catalog:discover": "node scripts/catalog/discover.js",
-    "catalog:reconcile": "node scripts/catalog/reconcile.js",
-    "catalog:verify": "node scripts/catalog/verify.js",
-    "catalog:assemble": "node scripts/catalog/assemble.js",
-    "catalog:rediscover": "node scripts/catalog/rediscover.js"
+    "catalog:discover": "node scripts/github/discover.js",
+    "catalog:reconcile": "node scripts/github/reconcile.js",
+    "catalog:verify": "node scripts/github/verify.js",
+    "catalog:assemble": "node scripts/github/assemble.js",
+    "catalog:rediscover": "node scripts/github/rediscover.js",
+    "gitee:catalog:discover": "node scripts/gitee/discover.js --platform=gitee",
+    "gitee:catalog:reconcile": "node scripts/gitee/reconcile.js --platform=gitee",
+    "gitee:catalog:verify": "node scripts/gitee/verify.js --platform=gitee",
+    "gitee:catalog:assemble": "node scripts/gitee/assemble.js --platform=gitee",
+    "gitee:catalog:rediscover": "node scripts/gitee/rediscover.js --platform=gitee"
   },
   "dependencies": {
     "@octokit/rest": "^21.0.0"

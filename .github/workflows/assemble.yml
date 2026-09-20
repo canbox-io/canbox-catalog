@@ -25,14 +25,14 @@ jobs:
         run: npm install --no-package-lock --registry=https://registry.npmjs.org/
 
       - name: Assemble catalog
-        run: node scripts/catalog/assemble.js
+        run: node scripts/github/assemble.js --platform=github
 
       - name: Commit catalog
         if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/catalog.json data/catalogs/
+          git add data/github/catalog.json data/github/catalogs/
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0

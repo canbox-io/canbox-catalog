@@ -18,7 +18,7 @@ jobs:
       - name: Determine shard to verify
         id: shard
         run: |
-          SHARD_INDEX=$(node -e "const d=require('./data/app_lists.json'); console.log(d.nextShardToVerify || 1)")
+          SHARD_INDEX=$(node -e "const d=require('./data/github/app_lists.json'); console.log(d.nextShardToVerify || 1)")
           echo "shard_index=$SHARD_INDEX" >> $GITHUB_OUTPUT
 
       - name: Setup Node.js
@@ -32,7 +32,7 @@ jobs:
       - name: Verify shard
         env:
           GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-        run: node scripts/catalog/verify.js --shard=${{ steps.shard.outputs.shard_index }}
+        run: node scripts/github/verify.js --platform=github --shard=${{ steps.shard.outputs.shard_index }}
 
       - name: Commit changes
         if: success()

@@ -18,5 +18,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # Catalog trigger markers
-data/.discover-result.json
-data/.reconcile-result.json
+data/*/.discover-result.json
+data/*/.reconcile-result.json
