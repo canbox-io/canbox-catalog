@@ -7,7 +7,8 @@
 const helpers = require('./helpers');
 
 const PLATFORM = helpers.getPlatformArg();
-const paths = helpers.getPaths(PLATFORM);
+const dataRepoRoot = helpers.getDataRepoRoot();
+const paths = helpers.getPaths(PLATFORM, dataRepoRoot);
 const ADAPTER = helpers.getPlatformAdapter(PLATFORM);
 
 /**

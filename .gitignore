@@ -17,6 +17,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Catalog trigger markers
+# Catalog trigger markers (legacy, data moved to canbox-catalog-data repo)
 data/*/.discover-result.json
 data/*/.reconcile-result.json
+
+# Data directory (data now stored in independent canbox-catalog-data repo)
+data/

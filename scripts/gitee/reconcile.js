@@ -18,7 +18,7 @@ if (argPlatform !== PLATFORM) {
     process.exit(1);
 }
 
-const paths = helpers.getPaths(PLATFORM);
+const paths = helpers.getPaths(PLATFORM, helpers.getDataRepoRoot());
 const TRIGGER_FILE = paths.triggerFile('reconcile-result');
 
 async function reconcile() {

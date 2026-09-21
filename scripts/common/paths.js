@@ -1,17 +1,17 @@
 /**
  * Catalog 平台路径与运行参数解析
  *
- * 产物按平台分子目录存放（data/{platform}/），本模块是唯一决定数据根目录的地方：
- * 所有读写函数统一接收本模块返回的 paths 对象，禁止在业务代码里拼接数据路径。
+ * 产物存储在各 git 平台独立的 canbox-catalog-data 仓库根目录（不再有 data/{platform}/ 嵌套）。
+ * 数据根目录由调用方通过 --data-repo-root 参数传入（指向 clone 到的 canbox-catalog-data 目录）。
+ * 若未传入，默认使用 {REPO_ROOT}/data/{platform}（仅用于本地开发/测试）。
  *
- * 目录结构：
- *   data/{platform}/
- *     catalog.json               展示数据索引
- *     catalogs/shard-XXX.json    展示数据分片
- *     app_lists.json             原始数据索引
- *     app_lists_shards/shard-XXX.json  原始数据分片
- *     discovery_cursor.json      发现游标
- *     .{action}-result.json      触发标记（临时产物）
+ * 目录结构（canbox-catalog-data 根目录）：
+ *   catalog.json               展示数据索引
+ *   catalogs/shard-XXX.json    展示数据分片
+ *   app_lists.json             原始数据索引
+ *   app_lists_shards/shard-XXX.json  原始数据分片
+ *   discovery_cursor.json      发现游标
+ *   .{action}-result.json      触发标记（临时产物）
  */
 
 const path = require('path');
@@ -53,6 +53,15 @@ function getPlatformArg(argv = process.argv.slice(2), fallback = DEFAULT_PLATFOR
 }
 
 /**
+ * 读取 --data-repo-root 参数（指向 canbox-catalog-data 仓库的 checkout 路径）
+ * @param {string[]} [argv]
+ * @returns {string|null}
+ */
+function getDataRepoRoot(argv = process.argv.slice(2)) {
+    return getArgValue('data-repo-root', argv, null);
+}
+
+/**
  * 校验平台名合法性
  * @param {string} platform
  */
@@ -76,9 +85,9 @@ function assertPlatform(platform) {
  *   triggerFile: (name: string) => string
  * }}
  */
-function getPaths(platform = DEFAULT_PLATFORM) {
+function getPaths(platform = DEFAULT_PLATFORM, dataRepoRoot) {
     assertPlatform(platform);
-    const dataDir = path.join(REPO_ROOT, 'data', platform);
+    const dataDir = dataRepoRoot || path.join(REPO_ROOT, 'data', platform);
     return {
         platform,
         dataDir,
@@ -97,6 +106,7 @@ module.exports = {
     DEFAULT_PLATFORM,
     getArgValue,
     getPlatformArg,
+    getDataRepoRoot,
     assertPlatform,
     getPaths
 };

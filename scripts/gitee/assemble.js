@@ -12,7 +12,7 @@ if (argPlatform !== PLATFORM) {
     process.exit(1);
 }
 
-const paths = helpers.getPaths(PLATFORM);
+const paths = helpers.getPaths(PLATFORM, helpers.getDataRepoRoot());
 
 async function assemble() {
     helpers.assembleCatalog(paths);

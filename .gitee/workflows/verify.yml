@@ -5,10 +5,6 @@ on:
     - cron: '0 */2 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  actions: write
-
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -20,7 +16,7 @@ jobs:
         with:
           repository: canbox-io/canbox-catalog-data
           path: canbox-catalog-data
-          token: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CATALOG_GITEE_TOKEN }}
 
       - name: Determine shard to verify
         id: shard
@@ -38,15 +34,15 @@ jobs:
 
       - name: Verify shard
         env:
-          GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
-        run: node scripts/github/verify.js --platform=github --shard=${{ steps.shard.outputs.shard_index }} --data-repo-root=./canbox-catalog-data
+          CATALOG_GITEE_TOKEN: ${{ secrets.CATALOG_GITEE_TOKEN }}
+        run: node scripts/gitee/verify.js --platform=gitee --shard=${{ steps.shard.outputs.shard_index }} --data-repo-root=./canbox-catalog-data
 
       - name: Commit changes
         if: success()
         run: |
           cd canbox-catalog-data
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "gitee-ci"
+          git config user.email "ci@gitee.com"
           git add .
           if git diff --cached --quiet; then
             echo "No changes to commit"
@@ -55,15 +51,3 @@ jobs:
           git commit -m "chore: catalog verify shard-${{ steps.shard.outputs.shard_index }} - $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           git pull --rebase origin main
           git push
-
-      - name: Trigger assemble
-        if: success()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'assemble.yml',
-              ref: 'main'
-            });

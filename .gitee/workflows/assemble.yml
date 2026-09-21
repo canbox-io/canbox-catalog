@@ -3,9 +3,6 @@ name: Assemble Catalog
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 concurrency:
   group: catalog-assemble
   cancel-in-progress: false
@@ -21,7 +18,7 @@ jobs:
         with:
           repository: canbox-io/canbox-catalog-data
           path: canbox-catalog-data
-          token: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CATALOG_GITEE_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -32,14 +29,14 @@ jobs:
         run: npm install --no-package-lock --registry=https://registry.npmjs.org/
 
       - name: Assemble catalog
-        run: node scripts/github/assemble.js --platform=github --data-repo-root=./canbox-catalog-data
+        run: node scripts/gitee/assemble.js --platform=gitee --data-repo-root=./canbox-catalog-data
 
       - name: Commit catalog
         if: success()
         run: |
           cd canbox-catalog-data
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "gitee-ci"
+          git config user.email "ci@gitee.com"
           git add .
           if git diff --cached --quiet; then
             echo "No changes to commit"
