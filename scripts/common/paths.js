@@ -19,7 +19,7 @@ const path = require('path');
 // scripts/common/ → 仓库根目录
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
-const SUPPORTED_PLATFORMS = ['github', 'gitee'];
+const SUPPORTED_PLATFORMS = ['github'];
 const DEFAULT_PLATFORM = 'github';
 
 /**
