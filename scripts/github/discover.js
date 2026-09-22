@@ -103,7 +103,10 @@ async function fullScan() {
 async function incrementalScan(lastRun) {
     const now = new Date();
     const lookback = new Date(now.getTime() - LOOKBACK_MINUTES * 60 * 1000);
-    const since = new Date(Math.max(new Date(lastRun).getTime() - LOOKBACK_MINUTES * 60 * 1000, lookback.getTime()));
+    // 取较早的时间作为起点：当两次运行间隔超过 2 * LOOKBACK_MINUTES 时，
+    // 窗口需要向后扩展到 lastRun - LOOKBACK_MINUTES，避免漏掉中间创建的仓库。
+    // 用 Math.min 而非 Math.max：宁可多扫也不要漏（appendAppsToShards 会去重）。
+    const since = new Date(Math.min(new Date(lastRun).getTime() - LOOKBACK_MINUTES * 60 * 1000, lookback.getTime()));
 
     const createdRange = `${since.toISOString().replace(/\.\d{3}Z$/, 'Z')}..${now.toISOString().replace(/\.\d{3}Z$/, 'Z')}`;
 
