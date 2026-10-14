@@ -7,6 +7,7 @@
  */
 
 const { calculateRiskScore, calculateRiskLevel, shouldShowDownload } = require('./scoring');
+const { normalizeCategory } = require('./category');
 
 const PLATFORM_ADAPTERS = new Map();
 
@@ -113,7 +114,7 @@ function toCatalogApp(app, canboxApp, pkg, repoMeta, platform) {
         description,
         description_en,
         author: pkg ? (pkg.author || '') : '',
-        category: canboxApp ? (canboxApp.category || '') : '',
+        category: canboxApp ? normalizeCategory(canboxApp.category) : 'other',
         tags: canboxApp ? (canboxApp.tags || []) : [],
         logo,
         homepage: repoMeta ? repoMeta.homepage : (app.repo || null),

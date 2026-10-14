@@ -171,8 +171,10 @@ async function verifyApp(app) {
         canboxApp = await helpers.fetchRepoFile(currentOwner, currentRepoName, helpers.CANBOX_APP_FILENAME);
         const canboxValidation = helpers.validateCanboxApp(canboxApp);
         app.hasValidCanboxApp = canboxValidation.valid;
+        app.canboxWarnings = canboxValidation.warnings || [];
     } catch (err) {
         app.hasValidCanboxApp = false;
+        app.canboxWarnings = [];
         console.warn(`[verify] ${app.id}: Failed to fetch .canbox-app: ${err.message}`);
     }
 

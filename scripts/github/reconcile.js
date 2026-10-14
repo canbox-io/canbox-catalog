@@ -108,11 +108,13 @@ async function parseRepoToApp(repo, action) {
     let pkg = null;
     let hasValidCanboxApp = false;
     let hasValidPackageJson = false;
+    let canboxWarnings = [];
 
     try {
         canboxApp = await helpers.fetchRepoFile(owner, repoName, helpers.CANBOX_APP_FILENAME);
         const canboxValidation = helpers.validateCanboxApp(canboxApp);
         hasValidCanboxApp = canboxValidation.valid;
+        canboxWarnings = canboxValidation.warnings || [];
     } catch (err) {
         console.warn(`[reconcile] ${repo.full_name}: Failed to fetch .canbox-app: ${err.message}`);
     }
@@ -141,6 +143,7 @@ async function parseRepoToApp(repo, action) {
         repoStatusDetail: null,
         hasValidCanboxApp,
         hasValidPackageJson,
+        canboxWarnings,
         errorHistory: [],
         _canboxApp: canboxApp,
         _pkg: pkg,

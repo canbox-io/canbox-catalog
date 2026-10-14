@@ -33,6 +33,11 @@ function calculateRiskScore(app) {
     // 累计失败次数
     score -= Math.min(app.consecutiveFailures * 2, 20);
 
+    // category 非法告警：风险评分降 10 分（降一档）
+    if (app.canboxWarnings && app.canboxWarnings.length > 0) {
+        score -= 10;
+    }
+
     return Math.max(0, Math.min(100, score));
 }
 

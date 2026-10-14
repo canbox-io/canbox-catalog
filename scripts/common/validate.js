@@ -2,6 +2,8 @@
  * Catalog 平台无关校验：.canbox-app / package.json
  */
 
+const { APP_CATEGORIES } = require('./category');
+
 /**
  * 校验 .canbox-app 文件内容
  * @param {object|null} canboxApp
@@ -9,8 +11,9 @@
  */
 function validateCanboxApp(canboxApp) {
     const errors = [];
+    const warnings = [];
     if (!canboxApp) {
-        return { valid: false, errors: ['.canbox-app file not found'] };
+        return { valid: false, errors: ['.canbox-app file not found'], warnings };
     }
     if (!canboxApp.type) {
         errors.push('Missing required field: type');
@@ -20,7 +23,14 @@ function validateCanboxApp(canboxApp) {
     if (canboxApp.type === 'native' && (!canboxApp.electron || !canboxApp.electron.range)) {
         errors.push('Native app requires electron.range field');
     }
-    return { valid: errors.length === 0, errors };
+    // category 可选；存在但不在 9 项枚举内时记告警，不阻断校验
+    if (canboxApp.category !== undefined && canboxApp.category !== null) {
+        const cat = String(canboxApp.category).trim();
+        if (cat !== '' && !APP_CATEGORIES.includes(cat)) {
+            warnings.push(`Invalid category: ${canboxApp.category}, must be one of: ${APP_CATEGORIES.join(', ')}`);
+        }
+    }
+    return { valid: errors.length === 0, errors, warnings };
 }
 
 /**

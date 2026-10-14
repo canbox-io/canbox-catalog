@@ -166,11 +166,13 @@ async function parseRepoToApp(repo, action) {
     let pkg = null;
     let hasValidCanboxApp = false;
     let hasValidPackageJson = false;
+    let canboxWarnings = [];
 
     try {
         canboxApp = await helpers.fetchRepoFile(owner, repoName, helpers.CANBOX_APP_FILENAME);
         const canboxValidation = helpers.validateCanboxApp(canboxApp);
         hasValidCanboxApp = canboxValidation.valid;
+        canboxWarnings = canboxValidation.warnings || [];
         if (!canboxValidation.valid) {
             console.warn(`[discover] ${repo.full_name}: .canbox-app validation failed: ${canboxValidation.errors.join(', ')}`);
         }
@@ -205,6 +207,7 @@ async function parseRepoToApp(repo, action) {
         repoStatusDetail: null,
         hasValidCanboxApp,
         hasValidPackageJson,
+        canboxWarnings,
         errorHistory: [],
         // 保存元数据供后续使用
         _canboxApp: canboxApp,
