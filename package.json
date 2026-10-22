@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Canbox APP catalog data production and storage",
+  "license": "Apache-2.0",
   "scripts": {
     "catalog:discover": "node scripts/github/discover.js",
     "catalog:reconcile": "node scripts/github/reconcile.js",
