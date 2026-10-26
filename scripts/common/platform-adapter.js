@@ -107,10 +107,13 @@ function toCatalogApp(app, canboxApp, pkg, repoMeta, platform) {
         }
     }
 
+    const fallbackName = app.id.split('.').pop();
     return {
         id: app.id,
         repo: app.repo,
-        name: pkg ? pkg.name : app.id.split('.').pop(),
+        name: pkg ? pkg.name : fallbackName,
+        // 展示名：package.json 的 displayName 优先，name 兜底；name 仅作机器标识
+        displayName: pkg ? (pkg.displayName || pkg.name) : fallbackName,
         description,
         description_en,
         author: pkg ? (pkg.author || '') : '',
