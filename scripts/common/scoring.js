@@ -75,11 +75,9 @@ function updateAppStatus(app, checkSuccess) {
 
     if (checkSuccess) {
         consecutiveFailures = 0;
-        if (status === STATUS.WARNING || status === STATUS.UNKNOWN) {
-            status = STATUS.ACTIVE;
-        }
-        // critical 状态恢复需要连续成功（简化：一次成功即恢复为 active）
-        if (status === STATUS.CRITICAL) {
+        // 一次成功检查即可恢复为 active。除 warning/unknown/critical 外，
+        // stale/removed 也必须恢复，否则仓库修复后仍会被 catalog 过滤，永远回不到目录。
+        if (status !== STATUS.ACTIVE) {
             status = STATUS.ACTIVE;
         }
     } else {

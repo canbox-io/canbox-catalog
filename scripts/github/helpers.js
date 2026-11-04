@@ -106,6 +106,44 @@ async function checkRepoAccess(owner, repo) {
 }
 
 /**
+ * 探测指定版本的 Release 资产
+ *
+ * 与 canbox-manager `repo-probe.js` 的匹配规则保持一致：只认
+ * `{id}-{version}.zip` / `{name}-{version}.zip`，带平台后缀的资产不会被客户端识别。
+ *
+ * @param {string} owner
+ * @param {string} repo
+ * @param {string} version - package.json 中的版本号
+ * @param {string[]} identifiers - 候选前缀（package.json 的 id / name）
+ * @returns {Promise<{found: boolean, assetName: string|null, tag: string|null, available: string[]}>}
+ */
+async function findReleaseAsset(owner, repo, version, identifiers = []) {
+    const octokit = getOctokit();
+    const prefixes = Array.from(new Set(identifiers.filter(Boolean)));
+    const tags = [`v${version}`, version];
+    const available = [];
+
+    for (const tag of tags) {
+        try {
+            const response = await octokit.rest.repos.getReleaseByTag({ owner, repo, tag });
+            const assets = (response.data.assets || []).map(asset => asset.name);
+            available.push(...assets);
+            const assetName = assets.find(name =>
+                prefixes.some(prefix => name === `${prefix}-${version}.zip`)
+            );
+            if (assetName) {
+                return { found: true, assetName, tag, available: assets };
+            }
+        } catch (err) {
+            if (err.status === 404) continue;
+            throw err;
+        }
+    }
+
+    return { found: false, assetName: null, tag: null, available };
+}
+
+/**
  * 获取仓库元数据（stars、forks、lastCommit 等）
  * @param {object} repoData - GitHub API 返回的仓库数据
  * @returns {object}
@@ -135,5 +173,6 @@ module.exports = {
     searchCanboxApps,
     fetchRepoFile,
     checkRepoAccess,
+    findReleaseAsset,
     extractRepoMeta
 };

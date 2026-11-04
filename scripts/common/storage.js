@@ -174,6 +174,50 @@ function appendAppsToShards(newApps, paths) {
 }
 
 /**
+ * 写入/更新单个 APP（按仓库 ID、仓库 URL 或 APP ID 匹配）
+ * 已存在时原地替换，不存在时追加到分片。
+ * @param {object} app - 完整 APP 记录
+ * @param {object} paths
+ * @returns {{action: 'added'|'updated'|'unchanged', shardId: number|null}}
+ */
+function upsertApp(app, paths) {
+    ensureDir(paths.shardsDir);
+
+    const index = readAppListsIndex(paths);
+    for (const shardInfo of index.shards) {
+        const shard = readShard(shardInfo.id, paths);
+        if (!shard || !Array.isArray(shard.apps)) continue;
+
+        const idx = shard.apps.findIndex(existing =>
+            (app.githubRepoId && existing.githubRepoId === app.githubRepoId) ||
+            existing.repo === app.repo ||
+            existing.id === app.id
+        );
+        if (idx === -1) continue;
+
+        const prev = shard.apps[idx];
+        shard.apps[idx] = {
+            ...app,
+            // 首次发现时间与来源一旦写入就不再被登记覆盖
+            discoveredAt: prev.discoveredAt || app.discoveredAt,
+            createdAt: prev.createdAt || app.createdAt,
+            origin: prev.origin || app.origin
+        };
+        writeShard(shardInfo.id, shard, paths);
+
+        index.lastRefresh = new Date().toISOString();
+        writeAppListsIndex(index, paths);
+        return { action: 'updated', shardId: shardInfo.id };
+    }
+
+    const added = appendAppsToShards([app], paths);
+    if (added === 0) {
+        return { action: 'unchanged', shardId: null };
+    }
+    return { action: 'added', shardId: readAppListsIndex(paths).totalShards };
+}
+
+/**
  * 写入指定分片
  * @param {number} shardId
  * @param {object} shardData
@@ -241,6 +285,7 @@ module.exports = {
     findExistingApp,
     readAllApps,
     appendAppsToShards,
+    upsertApp,
     writeShard,
     readShard,
     readCursor,

@@ -9,7 +9,8 @@
     "catalog:reconcile": "node scripts/github/reconcile.js",
     "catalog:verify": "node scripts/github/verify.js",
     "catalog:assemble": "node scripts/github/assemble.js",
-    "catalog:rediscover": "node scripts/github/rediscover.js"
+    "catalog:rediscover": "node scripts/github/rediscover.js",
+    "catalog:register": "node scripts/github/register.js"
   },
   "dependencies": {
     "@octokit/rest": "^21.0.0"

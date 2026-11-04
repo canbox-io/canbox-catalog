@@ -9,6 +9,11 @@ permissions:
   contents: write
   actions: write
 
+# 所有写 catalog-data 的 workflow 共享同一个并发组，避免互相覆盖分片
+concurrency:
+  group: catalog-data-write
+  cancel-in-progress: false
+
 jobs:
   reconcile:
     runs-on: ubuntu-latest

@@ -6,8 +6,9 @@ on:
 permissions:
   contents: write
 
+# 与 discover/verify/reconcile/rediscover/register 共用同一并发组
 concurrency:
-  group: catalog-assemble
+  group: catalog-data-write
   cancel-in-progress: false
 
 jobs:

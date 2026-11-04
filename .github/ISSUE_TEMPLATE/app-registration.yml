@@ -1,0 +1,30 @@
+name: APP 登记
+description: 将你的 CanBox APP 仓库登记到官方目录
+title: "[登记] "
+labels: ["app-registration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        登记后会自动校验并写入目录，通常 1–2 分钟完成。
+
+        **要求**：仓库公开可访问；根目录包含合法的 `.canbox-app` 与 `package.json`；提交者是仓库所有者，或仓库已添加 `canbox-app` topic（组织仓库必须使用 topic 方式）。
+
+        结果会以评论形式回复在本 Issue 下，请勿提前关闭。
+  - type: input
+    id: repo_url
+    attributes:
+      label: 仓库地址
+      description: 只支持 GitHub 公开仓库，格式为 https://github.com/owner/repo
+      placeholder: https://github.com/owner/repo
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: 确认事项
+      options:
+        - label: 我是该仓库的所有者，或该仓库已添加 `canbox-app` topic
+          required: true
+        - label: 仓库根目录包含合法的 `.canbox-app` 与 `package.json`
+          required: true
