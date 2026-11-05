@@ -18,9 +18,11 @@ permissions:
   contents: write
   issues: write
 
-# 与 discover/verify/reconcile/rediscover/assemble 共用同一并发组
+# 用户触发的登记不能与定时任务共用并发组：同组只有 1 个运行位 + 1 个等待位，
+# discover（每小时）/ verify（每 2 小时）会把等待中的登记顶掉。
+# 独立成组保证登记一定能跑，写入冲突交给下面的 commit 重试处理。
 concurrency:
-  group: catalog-data-write
+  group: catalog-data-write-register
   cancel-in-progress: false
 
 jobs:
@@ -113,8 +115,22 @@ jobs:
             exit 0
           fi
           git commit -m "chore: catalog register - $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          git pull --rebase origin main
-          git push
+          # 与定时任务并发时 push 可能被拒，重试若干次；rebase 冲突则直接失败并回执
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "::error::rebase conflict on attempt $attempt"
+              exit 1
+            fi
+            if git push; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          echo "::error::push failed after 5 attempts"
+          exit 1
 
       - name: Reply on issue
         if: always() && github.event_name == 'issues'
