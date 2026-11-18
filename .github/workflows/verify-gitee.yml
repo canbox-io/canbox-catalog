@@ -1,0 +1,95 @@
+name: Verify And Refresh Gitee APPs
+
+on:
+  schedule:
+    # 与 GitHub 校验错开半小时，避免同时抢写 catalog-data
+    - cron: '30 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 所有写 catalog-data 的 workflow 共享同一个并发组，避免互相覆盖分片
+concurrency:
+  group: catalog-data-write
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout canbox-catalog-data
+        uses: actions/checkout@v4
+        with:
+          repository: canbox-io/canbox-catalog-data
+          path: canbox-catalog-data
+          token: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Check GITEE_TOKEN
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: |
+          if [ -z "$GITEE_TOKEN" ]; then
+            echo "::error::缺少 GITEE_TOKEN secret，Gitee API 匿名额度无法支撑定时校验。"
+            exit 1
+          fi
+
+      - name: Determine shard to verify
+        id: shard
+        run: |
+          INDEX_FILE=./canbox-catalog-data/sources/gitee/app_lists.json
+          if [ ! -f "$INDEX_FILE" ]; then
+            echo "shard_index=1" >> $GITHUB_OUTPUT
+            echo "has_apps=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); console.log('shard_index='+(d.nextShardToVerify||1)); console.log('has_apps='+((d.totalShards||0)>0));" "$INDEX_FILE" >> $GITHUB_OUTPUT
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: npm install --no-package-lock --registry=https://registry.npmjs.org/
+
+      - name: Verify shard
+        if: steps.shard.outputs.has_apps == 'true'
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+        run: node scripts/gitee/verify.js --platform=gitee --shard=${{ steps.shard.outputs.shard_index }} --data-repo-root=./canbox-catalog-data
+
+      - name: Assemble catalog
+        if: steps.shard.outputs.has_apps == 'true'
+        run: node scripts/gitee/assemble.js --platform=gitee --data-repo-root=./canbox-catalog-data
+
+      - name: Commit changes
+        if: success()
+        run: |
+          cd canbox-catalog-data
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sources/gitee
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: gitee verify shard-${{ steps.shard.outputs.shard_index }} - $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          # 与 GitHub 校验/登记并发时 push 可能被拒，重试若干次
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "::error::rebase conflict on attempt $attempt"
+              exit 1
+            fi
+            if git push; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          echo "::error::push failed after 5 attempts"
+          exit 1

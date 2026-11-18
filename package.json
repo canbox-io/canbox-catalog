@@ -10,7 +10,10 @@
     "catalog:verify": "node scripts/github/verify.js",
     "catalog:assemble": "node scripts/github/assemble.js",
     "catalog:rediscover": "node scripts/github/rediscover.js",
-    "catalog:register": "node scripts/github/register.js"
+    "catalog:register": "node scripts/github/register.js",
+    "catalog:gitee:register": "node scripts/gitee/register.js",
+    "catalog:gitee:verify": "node scripts/gitee/verify.js",
+    "catalog:gitee:assemble": "node scripts/gitee/assemble.js"
   },
   "dependencies": {
     "@octokit/rest": "^21.0.0"

@@ -6,12 +6,17 @@ on:
   workflow_dispatch:
     inputs:
       repo_url:
-        description: 'GitHub 仓库地址（https://github.com/owner/repo）'
+        description: '仓库地址（https://github.com/owner/repo 或 https://gitee.com/owner/repo）'
         required: true
         type: string
       issue_number:
         description: '关联 Issue 编号（可选，仅用于回执）'
         required: false
+        type: string
+      approved:
+        description: '维护者审核通过标记（Gitee 仓库必须为 true）'
+        required: false
+        default: 'false'
         type: string
 
 permissions:
@@ -59,7 +64,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const repoPattern = /https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+/;
+            const githubPattern = /https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+/;
+            const giteePattern = /https:\/\/gitee\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+/;
             let repoUrl = '';
             let issueNumber = '';
             let actor = context.actor || '';
@@ -69,20 +75,94 @@ jobs:
               issueNumber = String(context.payload.inputs?.issue_number || '').trim();
             } else {
               const body = String(context.payload.issue?.body || '');
-              const match = body.match(repoPattern);
+              const match = body.match(githubPattern) || body.match(giteePattern);
               repoUrl = match ? match[0] : '';
               issueNumber = String(context.payload.issue?.number || '');
               actor = context.payload.issue?.user?.login || actor;
             }
 
+            // workflow_dispatch 由维护者审核流程触发时，回查 Issue 作者作为提交人
+            if (context.eventName === 'workflow_dispatch' && issueNumber) {
+              try {
+                const { data: issue } = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: Number(issueNumber)
+                });
+                actor = issue.user?.login || actor;
+              } catch (err) {
+                core.warning(`无法读取关联 Issue #${issueNumber}: ${err.message}`);
+              }
+            }
+
             const normalized = repoUrl.replace(/\.git$/i, '').replace(/\/+$/, '');
-            const valid = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(normalized);
-            core.setOutput('repo_url', valid ? normalized : '');
+            let platform = '';
+            if (/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(normalized)) {
+              platform = 'github';
+            } else if (/^https:\/\/gitee\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(normalized)) {
+              platform = 'gitee';
+            }
+
+            const approved = context.eventName === 'workflow_dispatch'
+              ? String(context.payload.inputs?.approved || 'false').toLowerCase()
+              : 'false';
+
+            core.setOutput('repo_url', platform ? normalized : '');
+            core.setOutput('platform', platform);
             core.setOutput('issue_number', issueNumber);
             core.setOutput('actor', actor);
+            core.setOutput('approved', approved);
 
-      - name: Register APP
-        id: register
+      # Gitee 无法像 GitHub 一样通过 topic + owner 交叉核验身份，首期走人工审核。
+      # 维护者在 Issue 评论 /approve 后，由 approve workflow 以 approved=true 重新触发本流程。
+      - name: Pending Gitee review
+        id: pending
+        if: steps.input.outputs.platform == 'gitee' && steps.input.outputs.approved != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = Number('${{ steps.input.outputs.issue_number }}');
+            if (!issueNumber) return;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: '### ⏳ 等待维护者审核\n\n已收到 Gitee 仓库登记申请。由于 Gitee 缺少与 GitHub topic 等价的公开身份信号，首期采用人工审核：维护者在本 Issue 评论 `/approve` 后会自动校验并收录。'
+            });
+
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                labels: ['needs-review']
+              });
+            } catch (err) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'needs-review',
+                  color: 'fbca04',
+                  description: '等待维护者审核'
+                });
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  labels: ['needs-review']
+                });
+              } catch (labelErr) {
+                core.warning(`添加 needs-review 标签失败: ${labelErr.message}`);
+              }
+            }
+
+            core.setOutput('pending', 'true');
+
+      - name: Register APP (GitHub)
+        id: register_github
+        if: steps.input.outputs.platform == 'github'
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
@@ -91,12 +171,35 @@ jobs:
           ACTOR: ${{ steps.input.outputs.actor }}
         run: node scripts/github/register.js --platform=github --data-repo-root=./canbox-catalog-data
 
+      - name: Register APP (Gitee)
+        id: register_gitee
+        if: steps.input.outputs.platform == 'gitee' && steps.input.outputs.approved == 'true'
+        continue-on-error: true
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+          REPO_URL: ${{ steps.input.outputs.repo_url }}
+          ISSUE_NUMBER: ${{ steps.input.outputs.issue_number }}
+          ACTOR: ${{ steps.input.outputs.actor }}
+          REVIEW_APPROVED: 'true'
+        run: node scripts/gitee/register.js --platform=gitee --data-repo-root=./canbox-catalog-data
+
+      - name: Resolve result path
+        id: result_path
+        if: steps.pending.outputs.pending != 'true'
+        run: |
+          if [ "${{ steps.input.outputs.platform }}" = "gitee" ]; then
+            echo "path=canbox-catalog-data/sources/gitee/.register-result.json" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=canbox-catalog-data/.register-result.json" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Read result
         id: result
-        if: always()
+        if: always() && steps.pending.outputs.pending != 'true'
         run: |
-          if [ -f canbox-catalog-data/.register-result.json ]; then
-            node -e "const r=require('./canbox-catalog-data/.register-result.json'); console.log('ok='+r.ok); console.log('close='+r.closeIssue)" >> "$GITHUB_OUTPUT"
+          RESULT_FILE="${{ steps.result_path.outputs.path }}"
+          if [ -n "$RESULT_FILE" ] && [ -f "$RESULT_FILE" ]; then
+            node -e "const r=require('./'+process.argv[1]); console.log('ok='+r.ok); console.log('close='+r.closeIssue)" "$RESULT_FILE" >> "$GITHUB_OUTPUT"
           else
             echo "ok=false" >> "$GITHUB_OUTPUT"
             echo "close=false" >> "$GITHUB_OUTPUT"
@@ -133,22 +236,25 @@ jobs:
           exit 1
 
       - name: Reply on issue
-        if: always() && github.event_name == 'issues'
+        if: always() && steps.pending.outputs.pending != 'true' && steps.input.outputs.issue_number != ''
         uses: actions/github-script@v7
         env:
           COMMIT_OUTCOME: ${{ steps.commit.outcome }}
+          RESULT_FILE: ${{ steps.result_path.outputs.path }}
         with:
           script: |
             const fs = require('fs');
-            const path = './canbox-catalog-data/.register-result.json';
+            const issueNumber = Number('${{ steps.input.outputs.issue_number }}');
+            if (!issueNumber) return;
+
             let result = {
               ok: false,
               reason: 'system_error',
               message: '登记任务异常结束，未生成结果。请查看 Actions 日志，或稍后重新提交。',
               closeIssue: false
             };
-            if (fs.existsSync(path)) {
-              result = JSON.parse(fs.readFileSync(path, 'utf8'));
+            if (process.env.RESULT_FILE && fs.existsSync(process.env.RESULT_FILE)) {
+              result = JSON.parse(fs.readFileSync(process.env.RESULT_FILE, 'utf8'));
             }
 
             // 数据已写入但 push 失败时，不能对用户报「成功」
@@ -171,7 +277,7 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.payload.issue.number,
+              issue_number: issueNumber,
               body: `${heading}\n\n${result.message || ''}${footer}`
             });
 
@@ -179,7 +285,7 @@ jobs:
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.payload.issue.number,
+                issue_number: issueNumber,
                 state: 'closed',
                 state_reason: result.ok ? 'completed' : 'not_planned'
               });

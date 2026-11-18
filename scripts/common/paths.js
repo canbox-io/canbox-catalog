@@ -1,11 +1,12 @@
 /**
  * Catalog 平台路径与运行参数解析
  *
- * 产物存储在各 git 平台独立的 canbox-catalog-data 仓库根目录（不再有 data/{platform}/ 嵌套）。
+ * 产物存储在 canbox-catalog-data 仓库中：GitHub 保持根目录布局，
+ * 其他平台（如 Gitee）放在 sources/{platform}/ 子目录。
  * 数据根目录由调用方通过 --data-repo-root 参数传入（指向 clone 到的 canbox-catalog-data 目录）。
  * 若未传入，默认使用 {REPO_ROOT}/data/{platform}（仅用于本地开发/测试）。
  *
- * 目录结构（canbox-catalog-data 根目录）：
+ * 目录结构（canbox-catalog-data/{platform 子目录}）：
  *   catalog.json               展示数据索引
  *   catalogs/shard-XXX.json    展示数据分片
  *   app_lists.json             原始数据索引
@@ -19,8 +20,15 @@ const path = require('path');
 // scripts/common/ → 仓库根目录
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 
-const SUPPORTED_PLATFORMS = ['github'];
+const SUPPORTED_PLATFORMS = ['github', 'gitee'];
 const DEFAULT_PLATFORM = 'github';
+
+// 各平台在 canbox-catalog-data 仓库中的子目录。
+// github 保持历史根目录布局，其余平台放到 sources/<platform>/，避免影响现有消费端。
+const PLATFORM_DATA_SUBDIRS = {
+    github: '',
+    gitee: 'sources/gitee'
+};
 
 /**
  * 从命令行参数中读取指定参数值，支持 --name=value 与 --name value
@@ -87,7 +95,12 @@ function assertPlatform(platform) {
  */
 function getPaths(platform = DEFAULT_PLATFORM, dataRepoRoot) {
     assertPlatform(platform);
-    const dataDir = dataRepoRoot || path.join(REPO_ROOT, 'data', platform);
+    const subDir = PLATFORM_DATA_SUBDIRS[platform] !== undefined
+        ? PLATFORM_DATA_SUBDIRS[platform]
+        : path.join('sources', platform);
+    const dataDir = dataRepoRoot
+        ? path.join(dataRepoRoot, subDir)
+        : path.join(REPO_ROOT, 'data', platform);
     return {
         platform,
         dataDir,

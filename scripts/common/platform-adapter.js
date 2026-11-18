@@ -81,7 +81,8 @@ function toCatalogApp(app, canboxApp, pkg, repoMeta, platform) {
     const logoPath = (canboxApp && canboxApp.logo) || (pkg && pkg.logo) || 'logo.png';
     const repoMatch = app.repo.match(adapter.hostPattern);
     if (repoMatch) {
-        const branch = 'main'; // 默认 main
+        // 部分平台（如 Gitee）默认分支多为 master，优先使用仓库实际默认分支
+        const branch = app.defaultBranch || 'main';
         logo = `${adapter.rawBase(repoMatch[1], repoMatch[2], branch)}/${logoPath}`;
     }
 
@@ -110,6 +111,7 @@ function toCatalogApp(app, canboxApp, pkg, repoMeta, platform) {
     const fallbackName = app.id.split('.').pop();
     return {
         id: app.id,
+        platform: app.platform || platform,
         repo: app.repo,
         name: pkg ? pkg.name : fallbackName,
         // 展示名：package.json 的 displayName 优先，name 兜底；name 仅作机器标识
